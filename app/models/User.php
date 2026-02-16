@@ -81,8 +81,47 @@ class User
     }
 
     // Delete User
+    // Delete User
     public function deleteUser($id)
     {
+        // Delete related data first to avoid Foreign Key Violations
+        
+        // 1. Delete Profile
+        $this->db->query('DELETE FROM profiles WHERE user_id = :id');
+        $this->db->bind(':id', $id);
+        $this->db->execute();
+
+        // 2. Delete Advisories (if expert)
+        $this->db->query('DELETE FROM advisories WHERE expert_id = :id');
+        $this->db->bind(':id', $id);
+        $this->db->execute();
+
+        // 3. Delete Ratings (as expert or farmer)
+        $this->db->query('DELETE FROM expert_ratings WHERE expert_id = :id OR farmer_id = :id');
+        $this->db->bind(':id', $id);
+        $this->db->execute();
+
+        // 4. Delete Messages (sent or received)
+        $this->db->query('DELETE FROM messages WHERE sender_id = :id OR receiver_id = :id');
+        $this->db->bind(':id', $id);
+        $this->db->execute();
+
+        // 5. Delete Expert Requests
+        $this->db->query('DELETE FROM expert_requests WHERE user_id = :id');
+        $this->db->bind(':id', $id);
+        $this->db->execute();
+
+        // 6. Delete Orders
+        $this->db->query('DELETE FROM orders WHERE user_id = :id');
+        $this->db->bind(':id', $id);
+        $this->db->execute();
+
+        // 7. Delete Activities
+        $this->db->query('DELETE FROM activities WHERE user_id = :id');
+        $this->db->bind(':id', $id);
+        $this->db->execute();
+
+        // Finally Delete User
         $this->db->query('DELETE FROM users WHERE id = :id');
         $this->db->bind(':id', $id);
 
@@ -101,5 +140,38 @@ class User
 
         $row = $this->db->single();
         return $row;
+    }
+    // Get users by role
+    public function getUsersByRole($role)
+    {
+        $this->db->query('SELECT * FROM users WHERE role = :role');
+        $this->db->bind(':role', $role);
+        return $this->db->resultSet();
+    }
+
+    // Update last activity
+    public function updateActivity($id) {
+        $this->db->query('UPDATE users SET last_activity = NOW() WHERE id = :id');
+        $this->db->bind(':id', $id);
+        $this->db->execute();
+    }
+
+    // Check if user is online (active in last 5 minutes)
+    public function isOnline($id) {
+        $this->db->query('SELECT last_activity FROM users WHERE id = :id');
+        $this->db->bind(':id', $id);
+        $row = $this->db->single();
+
+        if($row && $row->last_activity) {
+            $last_activity = strtotime($row->last_activity);
+            $current_time = time();
+            $time_diff = $current_time - $last_activity;
+            
+            // 5 minutes = 300 seconds
+            if($time_diff <= 300) {
+                return true;
+            }
+        }
+        return false;
     }
 }
