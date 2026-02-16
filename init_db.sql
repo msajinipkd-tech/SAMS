@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     role ENUM('admin', 'farmer', 'buyer', 'expert', 'equipment_seller') DEFAULT 'farmer',
+    last_activity DATETIME NULL DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -110,3 +111,38 @@ CREATE TABLE IF NOT EXISTS cart (
 
 -- Insert default buyer user
 INSERT INTO users (username, password, role) VALUES ('buyer', '$2y$10$Xf37OIEvxKiL0yIxDrrQfukvBv.RlfTR34EuHuz8hAeJD/HT3tyEO', 'buyer');
+
+-- Create Expert Ratings table
+CREATE TABLE IF NOT EXISTS expert_ratings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    expert_id INT NOT NULL,
+    farmer_id INT NOT NULL,
+    rating DECIMAL(2, 1) NOT NULL,
+    feedback TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (expert_id) REFERENCES users(id),
+    FOREIGN KEY (farmer_id) REFERENCES users(id)
+);
+
+-- Create Advisories table
+CREATE TABLE IF NOT EXISTS advisories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    expert_id INT NOT NULL,
+    title VARCHAR(200) NOT NULL,
+    message TEXT NOT NULL,
+    type VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (expert_id) REFERENCES users(id)
+);
+
+-- Create Messages table
+CREATE TABLE IF NOT EXISTS messages (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    sender_id INT NOT NULL,
+    receiver_id INT NOT NULL,
+    message TEXT NOT NULL,
+    read_status BOOLEAN DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (sender_id) REFERENCES users(id),
+    FOREIGN KEY (receiver_id) REFERENCES users(id)
+);

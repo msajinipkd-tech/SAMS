@@ -63,9 +63,22 @@ class Farmer extends Controller
 
     public function expert()
     {
+        // Load Chat Model
+        $chatModel = $this->model('ChatModel');
+        $userModel = $this->model('User');
+
+        // Get conversations for the current farmer
+        $conversations = $chatModel->getConversations($_SESSION['user_id']);
+        
+        // Get all experts for "New Chat"
+        $experts = $userModel->getUsersByRole('expert');
+
         $data = [
-            'title' => 'Expert Advice'
+            'title' => 'Expert Advice',
+            'conversations' => $conversations,
+            'experts' => $experts
         ];
+        
         $this->view('farmer/expert', $data);
     }
 
@@ -85,5 +98,27 @@ class Farmer extends Controller
             'feedbacks' => $feedbacks
         ];
         $this->view('farmer/feedback', $data);
+    }
+
+    public function rateExpert()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+             
+             $data = [
+                 'expert_id' => $_POST['expert_id'],
+                 'farmer_id' => $_SESSION['user_id'],
+                 'rating' => $_POST['rating'],
+                 'feedback' => $_POST['feedback']
+             ];
+             
+             $ratingModel = $this->model('Rating');
+             
+             if($ratingModel->addRating($data)) {
+                 echo json_encode(['status' => 'success', 'message' => 'Rating submitted successfully']);
+             } else {
+                 echo json_encode(['status' => 'error', 'message' => 'Something went wrong']);
+             }
+        }
     }
 }

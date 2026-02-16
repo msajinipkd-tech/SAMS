@@ -1,29 +1,9 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
 <div class="row">
-    <style>
-        .rating-stars {
-            display: flex;
-            flex-direction: row-reverse;
-            justify-content: flex-end;
-        }
-        .rating-stars input {
-            display: none;
-        }
-        .rating-stars label {
-            font-size: 2rem;
-            color: #ddd;
-            cursor: pointer;
-        }
-        .rating-stars input:checked ~ label {
-            color: #ffc107;
-        }
-        .rating-stars input:hover ~ label {
-            color: #ffc107;
-        }
-    </style>
+    </div>
     <div class="col-md-4">
         <div class="card card-body bg-light mb-3">
-            <a href="<?php echo URLROOT; ?>/farmer/dashboard" class="btn btn-light btn-block mb-3"><i class="fa fa-arrow-left"></i> Back to Dashboard</a>
+            <a href="<?php echo URLROOT; ?>/expert/index" class="btn btn-light btn-block mb-3"><i class="fa fa-arrow-left"></i> Back to Dashboard</a>
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <h4>Conversations</h4>
                 <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#newChatModal"><i class="fa fa-plus"></i> New</button>
@@ -46,21 +26,20 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="newChatModalLabel">Ask an Expert</h5>
+                    <h5 class="modal-title" id="newChatModalLabel">Start New Chat</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <div class="list-group">
-                        <?php foreach($data['experts'] as $expert) : ?>
-                                <a href="#" class="list-group-item list-group-item-action new-chat-user" data-id="<?php echo $expert->id; ?>" data-username="<?php echo $expert->username; ?>">
-                                    <?php echo $expert->username; ?> <span class="badge badge-info">Expert</span>
+                        <?php foreach($data['users'] as $user) : ?>
+                            <?php if($user->id != $_SESSION['user_id']): ?>
+                                <a href="#" class="list-group-item list-group-item-action new-chat-user" data-id="<?php echo $user->id; ?>" data-username="<?php echo $user->username; ?>">
+                                    <?php echo $user->username; ?> <span class="badge badge-info"><?php echo ucfirst($user->role); ?></span>
                                 </a>
+                            <?php endif; ?>
                         <?php endforeach; ?>
-                        <?php if(empty($data['experts'])): ?>
-                             <p>No experts found.</p>
-                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -76,9 +55,11 @@
             </div>
             <div class="card-footer">
                 <form id="chat-form">
-                     <!-- Receiver ID will be set by JS -->
                     <input type="hidden" id="receiver_id" name="receiver_id">
                     <div class="input-group">
+                        <div class="input-group-prepend">
+                             <button type="button" class="btn btn-secondary" id="mic-btn"><i class="fa fa-microphone"></i></button>
+                        </div>
                         <input type="text" id="message_input" name="message" class="form-control" placeholder="Type a message..." required>
                         <div class="input-group-append">
                             <button class="btn btn-primary" type="submit">Send</button>
@@ -86,45 +67,9 @@
                     </div>
                 </form>
             </div>
-                </form>
-            </div>
         </div>
         <div class="card card-body text-center" id="no-chat-selected">
-            <h3>Select a conversation or start a new chat with an Expert</h3>
-        </div>
-    </div>
-    
-    <!-- Rating Modal -->
-    <div class="modal fade" id="ratingModal" tabindex="-1" role="dialog" aria-labelledby="ratingModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="ratingModalLabel">Rate Expert</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="rating-form">
-                        <input type="hidden" id="rating_expert_id" name="expert_id">
-                        <div class="form-group">
-                            <label>Rating:</label>
-                            <div class="rating-stars">
-                                <input type="radio" name="rating" value="5" id="star5"><label for="star5">☆</label>
-                                <input type="radio" name="rating" value="4" id="star4"><label for="star4">☆</label>
-                                <input type="radio" name="rating" value="3" id="star3"><label for="star3">☆</label>
-                                <input type="radio" name="rating" value="2" id="star2"><label for="star2">☆</label>
-                                <input type="radio" name="rating" value="1" id="star1"><label for="star1">☆</label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="feedback">Feedback:</label>
-                            <textarea class="form-control" id="feedback" name="feedback" rows="3"></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Submit Rating</button>
-                    </form>
-                </div>
-            </div>
+            <h3>Select a conversation to start chatting</h3>
         </div>
     </div>
 </div>
@@ -134,7 +79,6 @@
     const userId = '<?php echo $_SESSION['user_id']; ?>';
     let currentReceiverId = null;
     let chatInterval = null;
-    let statusInterval = null;
 
     document.addEventListener('DOMContentLoaded', function() {
         const conversationItems = document.querySelectorAll('.conversation-item');
@@ -146,18 +90,14 @@
         const chatForm = document.getElementById('chat-form');
         const messageInput = document.getElementById('message_input');
 
-        // Existing conversations click
         conversationItems.forEach(item => {
             item.addEventListener('click', function(e) {
                 e.preventDefault();
-                // Extract name crudely or better, assuming format "Name <span..."
-                // let's just get the first text node
-                const name = this.childNodes[0].textContent.trim();
-                selectUser(this.getAttribute('data-id'), name);
+                selectUser(this.getAttribute('data-id'), this.textContent.trim().split(' ')[0]); // Extract name crudely or better
             });
         });
 
-        // New Chat Selection (Experts)
+        // New Chat Selection
         const newChatUsers = document.querySelectorAll('.new-chat-user');
         newChatUsers.forEach(item => {
             item.addEventListener('click', function(e) {
@@ -175,15 +115,14 @@
 
         function selectUser(id, username) {
             // Remove active class from all
-            document.querySelectorAll('.conversation-item').forEach(i => i.classList.remove('active'));
+            conversationItems.forEach(i => i.classList.remove('active'));
             
             // Try to find if this user is already in the list
             let existingItem = document.querySelector(`.conversation-item[data-id="${id}"]`);
             
-            const list = document.getElementById('conversation-list');
-            
             if(!existingItem) {
                 // Create temp item
+                const list = document.getElementById('conversation-list');
                 const newItem = document.createElement('a');
                 newItem.href = '#';
                 newItem.className = 'list-group-item list-group-item-action conversation-item active';
@@ -198,7 +137,7 @@
                 list.prepend(newItem);
                 existingItem = newItem;
                 
-                // Re-bind click event
+                // Re-bind click event (or use delegation, but simple re-bind for now or just let it be)
                 newItem.addEventListener('click', function(e) {
                     e.preventDefault();
                     selectUser(id, username);
@@ -217,62 +156,13 @@
             // Load initial messages
             loadMessages();
             
-            // Start polling (if not already for this user, but we just clear and restart)
+            // Start polling (if not already)
             if(chatInterval) clearInterval(chatInterval);
             chatInterval = setInterval(loadMessages, 3000); 
 
-            // Status Polling
-            if(statusInterval) clearInterval(statusInterval);
-            updateUserStatus(id); // Initial check
-            statusInterval = setInterval(() => updateUserStatus(id), 10000); // Check every 10s
-
              // Update header
-            chatHeader.innerHTML = 'Chat with ' + username + ' <span id="chat-status" class="badge badge-secondary ml-2">Offline</span> <button class="btn btn-sm btn-warning float-right" onclick="openRatingModal(' + id + ')">Rate Expert</button>';
+            chatHeader.innerText = 'Chat with ' + username;
         }
-
-        function updateUserStatus(id) {
-            fetch(URLROOT + '/users/status/' + id)
-            .then(response => response.json())
-            .then(data => {
-                const statusSpan = document.getElementById('chat-status');
-                if(statusSpan) {
-                    if(data.online) {
-                        statusSpan.className = 'badge badge-success ml-2';
-                        statusSpan.innerText = 'Online';
-                    } else {
-                        statusSpan.className = 'badge badge-secondary ml-2';
-                        statusSpan.innerText = 'Offline';
-                    }
-                }
-            })
-            .catch(err => console.error(err));
-        }
-        
-        window.openRatingModal = function(id) {
-            document.getElementById('rating_expert_id').value = id;
-            $('#ratingModal').modal('show');
-        }
-
-        document.getElementById('rating-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-            
-            fetch(URLROOT + '/farmer/rateExpert', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if(data.status === 'success') {
-                    alert('Thanks for your feedback!');
-                    $('#ratingModal').modal('hide');
-                    this.reset();
-                } else {
-                    alert('Error submitting rating');
-                }
-            })
-            .catch(err => console.error(err));
-        });
 
         chatForm.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -303,8 +193,11 @@
         function loadMessages() {
             if(!currentReceiverId) return;
 
-            fetch(URLROOT + '/chat/fetch/' + currentReceiverId)
-            .then(response => response.json())
+            fetch(URLROOT + '/chat/fetch/' + currentReceiverId) // The fetch method in controller looks for raw arg or POST? 
+            // My controller implementation: public function fetch($other_user_id)
+            // But standard MVC frameworks often map params. Assuming libraries support /controller/method/param
+            // Let's verify routes. Usually yes.
+            .then(response => response.json()) // Controller returns JSON
             .then(messages => {
                 chatWindow.innerHTML = '';
                 if(messages.length === 0) {
@@ -324,7 +217,7 @@
                         const filename = content.replace('[VOICE]', '');
                         content = `<audio controls src="${URLROOT}/public/uploads/voice/${filename}"></audio>`;
                     }
-                    
+
                     const msgDiv = document.createElement('div');
                     msgDiv.className = `message ${align} mb-2`;
                     msgDiv.innerHTML = `
@@ -338,6 +231,71 @@
                 
                 // Scroll to bottom
                 chatWindow.scrollTop = chatWindow.scrollHeight;
+            })
+            .catch(err => console.error(err));
+        }
+
+        // Voice Chat Logic
+        const micBtn = document.getElementById('mic-btn');
+        let mediaRecorder;
+        let audioChunks = [];
+        let isRecording = false;
+
+        micBtn.addEventListener('click', async () => {
+             if (!isRecording) {
+                // Start Recording
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+
+                    mediaRecorder.addEventListener("dataavailable", event => {
+                        audioChunks.push(event.data);
+                    });
+
+                    mediaRecorder.addEventListener("stop", () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                        sendVoiceMessage(audioBlob);
+                        
+                        // Stop all tracks to release mic
+                        stream.getTracks().forEach(track => track.stop());
+                    });
+
+                    mediaRecorder.start();
+                    isRecording = true;
+                    micBtn.classList.remove('btn-secondary');
+                    micBtn.classList.add('btn-danger');
+                    micBtn.innerHTML = '<i class="fa fa-stop"></i>';
+                } catch (err) {
+                    console.error("Error accessing microphone:", err);
+                    alert("Could not access microphone. Please allow permissions.");
+                }
+            } else {
+                // Stop Recording
+                mediaRecorder.stop();
+                isRecording = false;
+                micBtn.classList.remove('btn-danger');
+                micBtn.classList.add('btn-secondary');
+                micBtn.innerHTML = '<i class="fa fa-microphone"></i>';
+            }
+        });
+
+        function sendVoiceMessage(audioBlob) {
+            const formData = new FormData();
+            formData.append('receiver_id', currentReceiverId);
+            formData.append('audio', audioBlob);
+
+            fetch(URLROOT + '/chat/sendVoice', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.status === 'success') {
+                    loadMessages();
+                } else {
+                    alert('Error sending voice message');
+                }
             })
             .catch(err => console.error(err));
         }

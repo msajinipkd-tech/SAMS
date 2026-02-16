@@ -1,25 +1,15 @@
 <?php
-$host = 'localhost';
-$user = 'root';
-$pass = '';
-$dbname = 'agriculture';
+// Load config
+require_once 'config/config.php';
+// Load libraries
+require_once 'app/core/Database.php';
 
-$conn = new mysqli($host, $user, $pass, $dbname);
+$db = new Database;
+$db->query('SELECT * FROM users');
+$users = $db->resultSet();
 
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+echo "ID | Username | Role\n";
+echo "---|---|---\n";
+foreach($users as $user){
+    echo $user->id . " | " . $user->username . " | " . $user->role . "\n";
 }
-
-$sql = "SELECT username, role, password FROM users WHERE role = 'buyer'";
-$result = $conn->query($sql);
-
-if ($result->num_rows > 0) {
-    echo "Found " . $result->num_rows . " buyer(s):\n";
-    while($row = $result->fetch_assoc()) {
-        echo "Username: " . $row["username"] . " | Role: " . $row["role"] . "\n";
-    }
-} else {
-    echo "No buyer accounts found.\n";
-}
-
-$conn->close();
