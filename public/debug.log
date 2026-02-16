@@ -1,0 +1,35 @@
+[2026-02-11 07:16:12] Payment Attempt - User: 2
+Validation Errors: Array
+(
+    [card_name] => State bank of india
+    [card_number] => 1234567890123
+    [card_expiry] => 6/30
+    [card_cvv] => 1234
+    [card_name_err] => 
+    [card_number_err] => 
+    [card_expiry_err] => Invalid format (MM/YY or MM/YYYY)
+    [card_cvv_err] => 
+    [general_err] => 
+)
+
+[2026-02-11 07:16:56] Payment Attempt - User: 2
+Order Success for User 2
+[2026-02-11 07:28:23] Payment Attempt - User: 2
+Order Success for User 2
+[2026-02-11 10:27:19] Payment Attempt - User: 2
+Validation Errors: Array
+(
+    [card_name] => State bank of india
+    [card_number] => 1234567890123
+    [card_expiry] => 06\2030
+    [card_cvv] => 1234
+    [card_name_err] => 
+    [card_number_err] => 
+    [card_expiry_err] => Invalid format (MM/YY or MM/YYYY)
+    [card_cvv_err] => 
+    [phone_err] => Invalid phone number (10 digits required)
+    [general_err] => 
+)
+
+[2026-02-12 14:56:13] Payment Attempt - User: 2
+Order Success for User 2

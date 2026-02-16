@@ -1,11 +1,24 @@
 <?php
 class Farmer extends Controller
 {
+    private $feedbackModel;
+
     public function __construct()
     {
         if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'farmer') {
             header('location: ' . URLROOT . '/users/login');
         }
+        $this->feedbackModel = $this->model('Feedback');
+        $this->reviewModel = $this->model('Review');
+    }
+
+    public function reviews() {
+        $reviews = $this->reviewModel->getAllReviews();
+        $data = [
+            'title' => 'Product Reviews',
+            'reviews' => $reviews
+        ];
+        $this->view('farmer/reviews', $data);
     }
 
     public function index()
@@ -62,5 +75,15 @@ class Farmer extends Controller
             'title' => 'My Profile'
         ];
         $this->view('farmer/profile', $data);
+    }
+
+    public function feedback()
+    {
+        $feedbacks = $this->feedbackModel->getFeedbacks();
+        $data = [
+            'title' => 'Buyer Feedback',
+            'feedbacks' => $feedbacks
+        ];
+        $this->view('farmer/feedback', $data);
     }
 }

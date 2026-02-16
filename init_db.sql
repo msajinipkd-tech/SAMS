@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS pesticides (
 CREATE TABLE IF NOT EXISTS products (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
+    category VARCHAR(50) NOT NULL DEFAULT 'General',
     price DECIMAL(10, 2) NOT NULL,
     quantity INT NOT NULL,
     description TEXT,
@@ -95,3 +96,17 @@ CREATE TABLE IF NOT EXISTS profiles (
 
 -- Insert default admin user
 INSERT INTO users (username, password, role) VALUES ('admin', '$2y$10$Xf37OIEvxKiL0yIxDrrQfukvBv.RlfTR34EuHuz8hAeJD/HT3tyEO', 'admin');
+
+-- Create Cart table
+CREATE TABLE IF NOT EXISTS cart (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+-- Insert default buyer user
+INSERT INTO users (username, password, role) VALUES ('buyer', '$2y$10$Xf37OIEvxKiL0yIxDrrQfukvBv.RlfTR34EuHuz8hAeJD/HT3tyEO', 'buyer');

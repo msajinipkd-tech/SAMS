@@ -86,6 +86,8 @@ class Users extends Controller
             header('location: ' . URLROOT . '/admin/dashboard');
         } elseif ($user->role == 'farmer') {
             header('location: ' . URLROOT . '/farmer/dashboard');
+        } elseif ($user->role == 'buyer') {
+            header('location: ' . URLROOT . '/buyer/dashboard');
         } else {
             header('location: ' . URLROOT . '/pages/index');
         }
