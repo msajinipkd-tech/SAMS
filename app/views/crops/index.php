@@ -12,6 +12,9 @@
                         <tr>
                             <th>Name</th>
                             <th>Type</th>
+                            <th>Variety</th>
+                            <th>Season</th>
+                            <th>Duration</th>
                             <th>Description</th>
                             <th>Actions</th>
                         </tr>
@@ -19,15 +22,12 @@
                     <tbody>
                         <?php foreach ($data['crops'] as $crop): ?>
                             <tr>
-                                <td>
-                                    <?php echo $crop->name; ?>
-                                </td>
-                                <td>
-                                    <?php echo $crop->type; ?>
-                                </td>
-                                <td>
-                                    <?php echo $crop->description; ?>
-                                </td>
+                                <td><?php echo $crop->name; ?></td>
+                                <td><?php echo $crop->type; ?></td>
+                                <td><?php echo $crop->variety; ?></td>
+                                <td><?php echo $crop->season; ?></td>
+                                <td><?php echo $crop->duration; ?> days</td>
+                                <td><?php echo $crop->description; ?></td>
                                 <td>
                                     <a href="<?php echo URLROOT; ?>/crops/edit/<?php echo $crop->id; ?>"
                                         class="btn btn-primary">Edit</a>

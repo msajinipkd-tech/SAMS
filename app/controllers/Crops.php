@@ -1,6 +1,8 @@
 <?php
 class Crops extends Controller
 {
+    private $cropModel;
+
     public function __construct()
     {
         if (!isset($_SESSION['user_id']) || ($_SESSION['user_role'] != 'admin' && $_SESSION['user_role'] != 'farmer')) {
@@ -26,6 +28,11 @@ class Crops extends Controller
             $data = [
                 'name' => trim($_POST['name']),
                 'type' => trim($_POST['type']),
+                'variety' => trim($_POST['variety']),
+                'season' => trim($_POST['season']),
+                'duration' => trim($_POST['duration']),
+                'soil_type' => trim($_POST['soil_type']),
+                'water_requirement' => trim($_POST['water_requirement']),
                 'description' => trim($_POST['description']),
                 'name_err' => '',
                 'type_err' => ''
@@ -51,6 +58,11 @@ class Crops extends Controller
             $data = [
                 'name' => '',
                 'type' => '',
+                'variety' => '',
+                'season' => '',
+                'duration' => '',
+                'soil_type' => '',
+                'water_requirement' => '',
                 'description' => ''
             ];
             $this->view('crops/add', $data);
@@ -66,6 +78,11 @@ class Crops extends Controller
                 'id' => $id,
                 'name' => trim($_POST['name']),
                 'type' => trim($_POST['type']),
+                'variety' => trim($_POST['variety']),
+                'season' => trim($_POST['season']),
+                'duration' => trim($_POST['duration']),
+                'soil_type' => trim($_POST['soil_type']),
+                'water_requirement' => trim($_POST['water_requirement']),
                 'description' => trim($_POST['description']),
                 'name_err' => '',
                 'type_err' => ''
@@ -97,6 +114,11 @@ class Crops extends Controller
                 'id' => $id,
                 'name' => $crop->name,
                 'type' => $crop->type,
+                'variety' => $crop->variety,
+                'season' => $crop->season,
+                'duration' => $crop->duration,
+                'soil_type' => $crop->soil_type,
+                'water_requirement' => $crop->water_requirement,
                 'description' => $crop->description
             ];
             $this->view('crops/edit', $data);

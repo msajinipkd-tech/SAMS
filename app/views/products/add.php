@@ -4,7 +4,7 @@
         <a href="<?php echo URLROOT; ?>/products" class="btn btn-primary">
             < Back</a>
                 <h2>Add Product</h2>
-                <form action="<?php echo URLROOT; ?>/products/add" method="post">
+                <form action="<?php echo URLROOT; ?>/products/add" method="post" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="name">Name: <sup>*</sup></label>
                         <input type="text" name="name"
@@ -30,6 +30,14 @@
                             value="<?php echo $data['quantity']; ?>">
                         <span class="invalid-feedback">
                             <?php echo $data['quantity_err']; ?>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <label for="image">Image:</label>
+                        <input type="file" name="image"
+                            class="form-control-file <?php echo (!empty($data['image_err'])) ? 'is-invalid' : ''; ?>">
+                        <span class="invalid-feedback">
+                            <?php echo $data['image_err']; ?>
                         </span>
                     </div>
                     <div class="form-group">
