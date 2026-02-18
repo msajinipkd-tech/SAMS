@@ -24,6 +24,45 @@
                         </span>
                     </div>
                     <div class="form-group">
+                        <label for="variety">Variety:</label>
+                        <input type="text" name="variety" class="form-control" value="<?php echo $data['variety']; ?>">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="season">Season:</label>
+                                <select name="season" class="form-control">
+                                    <option value="Kharif" <?php echo ($data['season'] == 'Kharif') ? 'selected' : ''; ?>>
+                                        Kharif</option>
+                                    <option value="Rabi" <?php echo ($data['season'] == 'Rabi') ? 'selected' : ''; ?>>Rabi
+                                    </option>
+                                    <option value="Zaid" <?php echo ($data['season'] == 'Zaid') ? 'selected' : ''; ?>>Zaid
+                                    </option>
+                                    <option value="All Year" <?php echo ($data['season'] == 'All Year') ? 'selected' : ''; ?>>All Year</option>
+                                    <option value="" <?php echo ($data['season'] == '') ? 'selected' : ''; ?>>Select
+                                        Season</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="duration">Duration (days):</label>
+                                <input type="number" name="duration" class="form-control"
+                                    value="<?php echo $data['duration']; ?>">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="soil_type">Required Soil Type:</label>
+                        <input type="text" name="soil_type" class="form-control"
+                            value="<?php echo $data['soil_type']; ?>">
+                    </div>
+                    <div class="form-group">
+                        <label for="water_requirement">Water Requirements:</label>
+                        <input type="text" name="water_requirement" class="form-control"
+                            value="<?php echo $data['water_requirement']; ?>">
+                    </div>
+                    <div class="form-group">
                         <label for="description">Description:</label>
                         <textarea name="description" class="form-control"><?php echo $data['description']; ?></textarea>
                     </div>

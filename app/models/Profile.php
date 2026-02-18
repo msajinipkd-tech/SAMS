@@ -31,6 +31,18 @@ class Profile {
         $this->db->bind(':full_name', $data['full_name']);
         $this->db->bind(':address', $data['address']);
         $this->db->bind(':phone', $data['phone']);
+     
+        return $this->db->execute();
+    }
+
+    public function updateProfilePicture($user_id, $path)
+    {
+        $this->db->query('INSERT INTO profiles (user_id, profile_picture) 
+                          VALUES (:user_id, :path)
+                          ON DUPLICATE KEY UPDATE 
+                          profile_picture = :path');
+        $this->db->bind(':user_id', $user_id);
+        $this->db->bind(':path', $path);
 
         if ($this->db->execute()) {
             return true;

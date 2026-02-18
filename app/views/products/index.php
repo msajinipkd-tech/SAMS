@@ -11,6 +11,7 @@
                 <table class="table">
                     <thead>
                         <tr>
+                            <th>Image</th>
                             <th>Name</th>
                             <th>Price</th>
                             <th>Quantity</th>
@@ -21,6 +22,14 @@
                     <tbody>
                         <?php foreach ($data['products'] as $product): ?>
                             <tr>
+                                <td>
+                                    <?php if (!empty($product->image)): ?>
+                                        <img src="<?php echo URLROOT; ?>/img/products/<?php echo $product->image; ?>"
+                                            alt="<?php echo $product->name; ?>" style="max-width: 50px;">
+                                    <?php else: ?>
+                                        <span>No Image</span>
+                                    <?php endif; ?>
+                                </td>
                                 <td>
                                     <?php echo $product->name; ?>
                                 </td>

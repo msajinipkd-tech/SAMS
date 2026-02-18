@@ -17,11 +17,15 @@ class App
         $url = $this->getUrl();
 
         // Look in controllers for first value
-        if (isset($url[0]) && file_exists('../app/controllers/' . ucwords($url[0]) . '.php')) {
-            // If exists, set as controller
-            $this->currentController = ucwords($url[0]);
-            // Unset 0 Index
-            unset($url[0]);
+        if (isset($url[0])) {
+            // Convert snake_case to PascalCase (e.g. crop_management -> CropManagement)
+            $controllerName = str_replace(' ', '', ucwords(str_replace('_', ' ', $url[0])));
+            if (file_exists('../app/controllers/' . $controllerName . '.php')) {
+                // If exists, set as controller
+                $this->currentController = $controllerName;
+                // Unset 0 Index
+                unset($url[0]);
+            }
         }
 
         // Require the controller

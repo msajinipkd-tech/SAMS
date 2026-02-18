@@ -141,6 +141,19 @@ class User
         $row = $this->db->single();
         return $row;
     }
+
+    // Change Password
+    public function changePassword($id, $newPassword)
+    {
+        $this->db->query('UPDATE users SET password = :password WHERE id = :id');
+        $this->db->bind(':password', $newPassword);
+        $this->db->bind(':id', $id);
+
+        if ($this->db->execute()) {
+            return true;
+        } else {
+            return false;
+        }
     // Get users by role
     public function getUsersByRole($role)
     {

@@ -42,12 +42,13 @@ class Product
 
     public function addProduct($data)
     {
-        $this->db->query('INSERT INTO products (name, category, price, quantity, description) VALUES(:name, :category, :price, :quantity, :description)');
+        $this->db->query('INSERT INTO products (name, price, quantity, description, image) VALUES(:name, :price, :quantity, :description, :image)');
         $this->db->bind(':name', $data['name']);
         $this->db->bind(':category', $data['category']);
         $this->db->bind(':price', $data['price']);
         $this->db->bind(':quantity', $data['quantity']);
         $this->db->bind(':description', $data['description']);
+        $this->db->bind(':image', $data['image']);
 
         if ($this->db->execute()) {
             return true;
@@ -65,13 +66,14 @@ class Product
 
     public function updateProduct($data)
     {
-        $this->db->query('UPDATE products SET name = :name, category = :category, price = :price, quantity = :quantity, description = :description WHERE id = :id');
+        $this->db->query('UPDATE products SET name = :name, price = :price, quantity = :quantity, description = :description, image = :image WHERE id = :id');
         $this->db->bind(':id', $data['id']);
         $this->db->bind(':name', $data['name']);
         $this->db->bind(':category', $data['category']);
         $this->db->bind(':price', $data['price']);
         $this->db->bind(':quantity', $data['quantity']);
         $this->db->bind(':description', $data['description']);
+        $this->db->bind(':image', $data['image']);
 
         if ($this->db->execute()) {
             return true;

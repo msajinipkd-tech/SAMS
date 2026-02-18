@@ -13,8 +13,8 @@
         <div class="card h-100">
             <div class="card-body">
                 <h5 class="card-title">Crop Management</h5>
-                <p class="card-text">View and manage crop information.</p>
-                <a href="<?php echo URLROOT; ?>/crops" class="btn btn-primary">Go to Crops</a>
+                <p class="card-text">Manage crops, plan cycles, and track growth.</p>
+                <a href="<?php echo URLROOT; ?>/crop_management" class="btn btn-primary">Manage Crops</a>
             </div>
         </div>
     </div>
@@ -48,9 +48,9 @@
     <div class="col-md-4 mb-4">
         <div class="card h-100">
             <div class="card-body">
-                <h5 class="card-title">Buy Products</h5>
-                <p class="card-text">Browse and purchase agricultural products.</p>
-                <a href="<?php echo URLROOT; ?>/products" class="btn btn-primary">Shop Now</a>
+                <h5 class="card-title">Sell Products</h5>
+                <p class="card-text">List and sell your agricultural products.</p>
+                <a href="<?php echo URLROOT; ?>/products" class="btn btn-primary">Add Products</a>
             </div>
         </div>
     </div>
