@@ -7,7 +7,13 @@
     <title>
         <?php echo SITENAME; ?>
     </title>
-    <link rel="stylesheet" href="<?php echo URLROOT; ?>/assets/css/style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'buyer'): ?>
+        <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/style.css">
+    <?php else: ?>
+        <link rel="stylesheet" href="<?php echo URLROOT; ?>/assets/css/style.css">
+    <?php endif; ?>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
@@ -22,6 +28,12 @@
                     </li>
                     <?php if ($_SESSION['user_role'] == 'admin'): ?>
                         <li><a href="<?php echo URLROOT; ?>/admin/dashboard">Dashboard</a></li>
+                    <?php elseif ($_SESSION['user_role'] == 'farmer'): ?>
+                        <li><a href="<?php echo URLROOT; ?>/farmer/dashboard">Dashboard</a></li>
+                    <?php elseif ($_SESSION['user_role'] == 'buyer'): ?>
+                        <li><a href="<?php echo URLROOT; ?>/buyer/dashboard">Dashboard</a></li>
+                        <li><a href="<?php echo URLROOT; ?>/buyer/orders">My Orders</a></li>
+                        <li><a href="<?php echo URLROOT; ?>/buyer/cart">Cart</a></li>
                     <?php endif; ?>
                     <li><a href="<?php echo URLROOT; ?>/users/logout">Logout</a></li>
                 <?php else: ?>

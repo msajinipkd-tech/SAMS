@@ -4,6 +4,7 @@ class Farmer extends Controller
     private $activityModel;
     private $userModel;
     private $profileModel;
+    private $feedbackModel;
 
     public function __construct()
     {
@@ -13,6 +14,17 @@ class Farmer extends Controller
         $this->activityModel = $this->model('Activity');
         $this->userModel = $this->model('User');
         $this->profileModel = $this->model('Profile');
+        $this->feedbackModel = $this->model('Feedback');
+        $this->reviewModel = $this->model('Review');
+    }
+
+    public function reviews() {
+        $reviews = $this->reviewModel->getAllReviews();
+        $data = [
+            'title' => 'Product Reviews',
+            'reviews' => $reviews
+        ];
+        $this->view('farmer/reviews', $data);
     }
 
     public function index()
@@ -108,7 +120,22 @@ class Farmer extends Controller
         $data = [
             'title' => 'Expert Advice',
             'requests' => $requests
+        // Load Chat Model
+        $chatModel = $this->model('ChatModel');
+        $userModel = $this->model('User');
+
+        // Get conversations for the current farmer
+        $conversations = $chatModel->getConversations($_SESSION['user_id']);
+        
+        // Get all experts for "New Chat"
+        $experts = $userModel->getUsersByRole('expert');
+
+        $data = [
+            'title' => 'Expert Advice',
+            'conversations' => $conversations,
+            'experts' => $experts
         ];
+        
         $this->view('farmer/expert', $data);
     }
 
@@ -231,6 +258,35 @@ class Farmer extends Controller
             } else {
                 header("Location: " . URLROOT . "/farmer/profile?upload=invalid_type");
             }
+    public function feedback()
+    {
+        $feedbacks = $this->feedbackModel->getFeedbacks();
+        $data = [
+            'title' => 'Buyer Feedback',
+            'feedbacks' => $feedbacks
+        ];
+        $this->view('farmer/feedback', $data);
+    }
+
+    public function rateExpert()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+             
+             $data = [
+                 'expert_id' => $_POST['expert_id'],
+                 'farmer_id' => $_SESSION['user_id'],
+                 'rating' => $_POST['rating'],
+                 'feedback' => $_POST['feedback']
+             ];
+             
+             $ratingModel = $this->model('Rating');
+             
+             if($ratingModel->addRating($data)) {
+                 echo json_encode(['status' => 'success', 'message' => 'Rating submitted successfully']);
+             } else {
+                 echo json_encode(['status' => 'error', 'message' => 'Something went wrong']);
+             }
         }
     }
 }

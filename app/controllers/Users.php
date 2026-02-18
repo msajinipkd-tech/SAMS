@@ -86,6 +86,10 @@ class Users extends Controller
             header('location: ' . URLROOT . '/admin/dashboard');
         } elseif ($user->role == 'farmer') {
             header('location: ' . URLROOT . '/farmer/dashboard');
+        } elseif ($user->role == 'buyer') {
+            header('location: ' . URLROOT . '/buyer/dashboard');
+        } elseif ($user->role == 'expert') {
+            header('location: ' . URLROOT . '/expert/dashboard');
         } else {
             header('location: ' . URLROOT . '/pages/index');
         }
@@ -239,5 +243,11 @@ class Users extends Controller
         } else {
             header('location: ' . URLROOT . '/users/manage');
         }
+    }
+
+    public function status($id) {
+        $isOnline = $this->userModel->isOnline($id);
+        header('Content-Type: application/json');
+        echo json_encode(['online' => $isOnline]);
     }
 }

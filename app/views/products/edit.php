@@ -16,6 +16,15 @@
                         </span>
                     </div>
                     <div class="form-group">
+                        <label for="category">Category: <sup>*</sup></label>
+                        <input type="text" name="category"
+                            class="form-control <?php echo (!empty($data['category_err'])) ? 'is-invalid' : ''; ?>"
+                            value="<?php echo $data['category']; ?>">
+                        <span class="invalid-feedback">
+                            <?php echo $data['category_err']; ?>
+                        </span>
+                    </div>
+                    <div class="form-group">
                         <label for="price">Price: <sup>*</sup></label>
                         <input type="number" step="0.01" name="price"
                             class="form-control <?php echo (!empty($data['price_err'])) ? 'is-invalid' : ''; ?>"
