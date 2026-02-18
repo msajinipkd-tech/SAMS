@@ -1,2 +1,5 @@
 # SAMS
-smart agricultural management system
+Smart Agricultural Management System
+a degree level project work
+PHP, MySQL, HTML, JavaScript, CSS
+MVC Architecture
