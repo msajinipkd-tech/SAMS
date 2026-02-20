@@ -41,13 +41,14 @@ CREATE TABLE IF NOT EXISTS pesticides (
 );
 
 -- Create Products table
-CREATE TABLE IF NOT EXISTS products (
+CREATE TABLE IF NOT EXISTS products2 (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     category VARCHAR(50) NOT NULL DEFAULT 'General',
     price DECIMAL(10, 2) NOT NULL,
     quantity INT NOT NULL,
     description TEXT,
+    image  varchar(255), 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

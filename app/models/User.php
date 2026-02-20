@@ -154,6 +154,7 @@ class User
         } else {
             return false;
         }
+    }
     // Get users by role
     public function getUsersByRole($role)
     {

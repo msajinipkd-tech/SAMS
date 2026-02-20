@@ -117,9 +117,7 @@ class Farmer extends Controller
     {
         $requestModel = $this->model('ExpertRequest');
         $requests = $requestModel->getRequestsByUserId($_SESSION['user_id']);
-        $data = [
-            'title' => 'Expert Advice',
-            'requests' => $requests
+        
         // Load Chat Model
         $chatModel = $this->model('ChatModel');
         $userModel = $this->model('User');
@@ -258,6 +256,8 @@ class Farmer extends Controller
             } else {
                 header("Location: " . URLROOT . "/farmer/profile?upload=invalid_type");
             }
+	}
+    }
     public function feedback()
     {
         $feedbacks = $this->feedbackModel->getFeedbacks();
