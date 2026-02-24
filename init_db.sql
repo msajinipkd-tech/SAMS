@@ -48,6 +48,7 @@ CREATE TABLE IF NOT EXISTS products (
     price DECIMAL(10, 2) NOT NULL,
     quantity INT NOT NULL,
     description TEXT,
+    image  varchar(255), 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
